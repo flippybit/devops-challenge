@@ -9,14 +9,22 @@
 # ENTRYPOINT ["bundle", "exec"]
 # Stage 1: Build the dependencies
 
+# Stage 1: Build the dependencies
 FROM ruby:3.1.3-alpine as builder
+
+# Install build dependencies, including PostgreSQL client
 RUN apk add --no-cache build-base curl nodejs yarn libxml2-dev libxslt-dev postgresql-dev
+
 WORKDIR /app
 COPY api/Gemfile api/Gemfile.lock ./
 RUN bundle install --jobs=4 --retry=3
 
 # Stage 2: Build the Rails application
 FROM ruby:3.1.3-alpine
+
+# Install runtime dependencies, including PostgreSQL client
+RUN apk add --no-cache postgresql-libs
+
 WORKDIR /app
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY api .
@@ -26,3 +34,4 @@ RUN bundle exec rake assets:precompile
 ENV RAILS_ENV=production
 EXPOSE 3000
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+
