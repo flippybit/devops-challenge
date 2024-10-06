@@ -20,7 +20,11 @@ jobs:
           sudo apt-get install docker-compose -y
 
       - name: Build and Run Docker Compose
-        run: docker-compose up --build -d
+        run: |
+          docker-compose build
+          docker-compose run api rake db:setup
+          docker-compose run api rake db:migrate
+          docker-compose up -d
 
       # - name: Run Tests
       #   run: docker-compose run api bundle exec rspec
