@@ -35,6 +35,7 @@ services:
 
   sidekiq:
     build:
+      context: .
       dockerfile: Dockerfile.rails
     volumes:
       - ./api:/app
