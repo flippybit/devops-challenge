@@ -16,6 +16,7 @@ services:
     tty: true
     stdin_open: true
     build:
+      context: .
       dockerfile: Dockerfile.rails
     platform: "linux/${CPU_ARCH-amd64}"
     volumes:
