@@ -23,6 +23,8 @@ jobs:
           sudo apt-get install docker-compose -y
 
       - name: Build and Run Docker Compose
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }} #pass secrete to Docker
         run: |
           docker-compose build
           docker-compose run api rake db:setup

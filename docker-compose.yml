@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:12.8
     environment:
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} #Use environment variable prevent hardcoding
     platform: "linux/${CPU_ARCH-amd64}"
     ports:
       - "5432:5432"
