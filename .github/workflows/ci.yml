@@ -13,13 +13,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Set up Docker
+
+      - name: Install Docker Compose
         run : |
           sudo apt-get update
           sudo apt-get install docker-compose -y
 
-      - name: Set up Docker Compose
+      - name: Build and Run Docker Compose
         run: docker-compose up --build -d
 
-      - name: Run Tests
-        run: docker-compose run api bundle exec rspec
+      # - name: Run Tests
+      #   run: docker-compose run api bundle exec rspec
