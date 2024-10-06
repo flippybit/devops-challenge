@@ -52,6 +52,7 @@ services:
 
   spa:
     build:
+      context: ./spa
       dockerfile: Dockerfile.react
     platform: "linux/${CPU_ARCH-amd64}"
     volumes:
