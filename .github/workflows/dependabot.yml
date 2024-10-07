@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # For npm dependencies (JavaScript/TypeScript)
+  - package-ecosystem: "npm"
+    directory: "/spa"  # Adjust the directory to where your package.json file is located
+    schedule:
+      interval: "daily"
+
+  # For Ruby dependencies (bundler)
+  - package-ecosystem: "bundler"
+    directory: "/api"  # Adjust the directory to where your Gemfile is located
+    schedule:
+      interval: "daily"
+
+  # For Docker dependencies (optional)
+  - package-ecosystem: "docker"
+    directory: "/"  # Scans the Dockerfiles in the root of your project
+    schedule:
+      interval: "weekly"
