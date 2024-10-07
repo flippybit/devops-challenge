@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint code with Super-Linter
         uses: github/super-linter@v4
@@ -41,7 +41,7 @@ jobs:
         language: [ruby, javascript-typescript]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -60,7 +60,7 @@ jobs:
     needs: [lint, codeql-analysis]  # This ensures both lint and code analysis run in parallel
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: List files in the repository
         run: ls -la
