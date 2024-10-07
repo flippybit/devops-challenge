@@ -18,6 +18,14 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUBOCOP_CONFIG_FILE: ../api/.rubocop.yml
+          IGNORE_GENERATED_FILES: true
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_TYPESCRIPT: true
+          VALIDATE_HTML: true
 
   build-and-test:
     runs-on: ubuntu-latest
