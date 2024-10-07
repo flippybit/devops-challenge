@@ -80,7 +80,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
+          
       - name: Run Database Setup and Migrations
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
