@@ -8,6 +8,7 @@ on:
 
 jobs:
   lint:
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,7 +19,7 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUBOCOP_CONFIG_FILE: ../api/.rubocop.yml
+          RUBOCOP_CONFIG_FILE: ./api/.rubocop.yml
           IGNORE_GENERATED_FILES: true
           IGNORE_GITIGNORED_FILES: true
           VALIDATE_ALL_CODEBASE: true
@@ -26,9 +27,48 @@ jobs:
           VALIDATE_TYPESCRIPT: true
           VALIDATE_HTML: true
 
-  build-and-test:
+  codeql-analysis:
+    name: CodeQL Analysis
     runs-on: ubuntu-latest
-    needs: lint  # This ensures linting runs first
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ruby, javascript-typescript]
+        build-mode: [automatic]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - if: matrix.build-mode == 'manual'
+        shell: bash
+        run: |
+          echo 'If you are using a "manual" build mode for one or more of the' \
+            'languages you are analyzing, replace this with the commands to build' \
+            'your code, for example:'
+          echo '  make bootstrap'
+          echo '  make release'
+          exit 1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: [lint, codeql-analysis]  # This ensures both lint and code analysis run in parallel
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
