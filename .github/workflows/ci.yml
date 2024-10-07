@@ -39,7 +39,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [ruby, javascript-typescript]
-        build-mode: [autobuild,manual]
+        build-mode: [none, manual]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -48,15 +48,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          build-mode: ${{ matrix.language == 'ruby' && 'manual' || 'automatic' }}
-
-      - name: Manual Build for Ruby
-        if: matrix.language == 'ruby'
-        run: |
-          echo 'Building Ruby project manually...'
-          bundle install
-          # Add any other build commands necessary for your Ruby project setup
-
+          build-mode: ${{ matrix.language == 'ruby' && 'none' || 'automatic' }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
