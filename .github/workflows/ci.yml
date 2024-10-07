@@ -21,8 +21,7 @@ jobs:
           RUBOCOP_CONFIG_FILE: ../api/.rubocop.yml
           IGNORE_GENERATED_FILES: true
           IGNORE_GITIGNORED_FILES: true
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_TYPESCRIPT: true
           VALIDATE_HTML: true
