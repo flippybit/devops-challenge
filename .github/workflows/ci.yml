@@ -95,4 +95,8 @@ jobs:
           docker-compose run api rake db:migrate
 
       - name: Run Tests
-        run: docker-compose run api bundle exec rspec
+        env:
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} 
+        run: |
+          export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} 
+          docker-compose run api bundle exec rspec
