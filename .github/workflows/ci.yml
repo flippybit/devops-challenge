@@ -135,6 +135,6 @@ jobs:
 
       - name: Run Tests
         env:
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} 
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }} 
         run:
           docker-compose run api bundle exec rspec
