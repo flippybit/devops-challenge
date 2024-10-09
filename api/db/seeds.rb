@@ -28,4 +28,4 @@ Video.create!([
   { title: 'The Future of AI', categories_id: categories[3].id }
 ])
 
-puts "Seeding completed successfully!"
+puts "Ran Seeding Script successfully!"
