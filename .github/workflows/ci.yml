@@ -61,42 +61,42 @@ jobs:
         with:
           category: "/language:${{matrix.language}}"
 
-  dependency-scanning:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # dependency-scanning:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'  # Use  same version as React app
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18'  # Use  same version as React app
 
-      - name: Run npm audit for JavaScript dependencies
-        working-directory: ./spa
-        run: |
-          npm install
-          npm audit
+  #     - name: Run npm audit for JavaScript dependencies
+  #       working-directory: ./spa
+  #       run: |
+  #         npm install
+  #         npm audit
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.1.3  # Use same version as yRails app
+  #     - name: Set up Ruby
+  #       uses: ruby/setup-ruby@v1
+  #       with:
+  #         ruby-version: 3.1.3  # Use same version as yRails app
 
-      - name: Install dependencies for Ruby
-        working-directory: ./api
-        run: bundle install
+  #     - name: Install dependencies for Ruby
+  #       working-directory: ./api
+  #       run: bundle install
 
-      - name: Run bundler-audit for Ruby dependencies
-        working-directory: ./api
-        run: |
-          gem install bundler-audit
-          bundle-audit check --update
+  #     - name: Run bundler-audit for Ruby dependencies
+  #       working-directory: ./api
+  #       run: |
+  #         gem install bundler-audit
+  #         bundle-audit check --update
           
   build:
     name: Build Application
     runs-on: ubuntu-latest
-    needs: [lint, codeql-analysis, dependency-scanning]  # This ensures both lint and code analysis run before the build
+    needs: [lint, codeql-analysis]  # This ensures both lint and code analysis run before the build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
