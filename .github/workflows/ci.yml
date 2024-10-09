@@ -112,6 +112,32 @@ jobs:
         run: |
           docker-compose build
 
+  snyk-scan:
+    name: Snyk Scan for Docker Images
+    runs-on: ubuntu-latest
+    needs: build  # Run Snyk scan after the Docker image build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Snyk CLI
+        run: |
+          curl -sL https://snyk.io/install | bash
+
+      - name: Authenticate Snyk
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk auth $SNYK_TOKEN
+
+      - name: Scan Docker Image for Vulnerabilities
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          docker-compose build 
+          snyk container test code-challenge_api:latest
+          snyk container test code-challenge_spa:latest
+          snyk container test code-challenge_nginx:latest  
+
   test:
     name: Test Application
     runs-on: ubuntu-latest
