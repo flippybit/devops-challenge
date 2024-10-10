@@ -101,43 +101,58 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose -y
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
       - name: Build Docker Images
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}  # Pass secret to Docker
         run: |
-          docker-compose build
+          docker compose build
 
   snyk-scan:
-    name: Snyk Scan for Docker Images
-    runs-on: ubuntu-latest
-    needs: build  # Run Snyk scan after the Docker image build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      name: Snyk Scan for Docker Images
+      runs-on: ubuntu-latest
+      needs: build  # Run Snyk scan after the Docker image build
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
+        - name: Build Docker Images
+          run: |
+            docker compose build
 
-      - name: Install Snyk CLI
-        uses: snyk/actions/setup@master
-  
-      - name: Authenticate Snyk
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk auth $SNYK_TOKEN
+        - name: Run Snyk to check Docker images for vulnerabilities (API)
+          uses: snyk/actions/docker@master
+          env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          with:
+            image: code-challenge_api:latest
+            args: --file=Dockerfile.rails --severity-threshold=high
+            sarif: true  # This ensures SARIF file generation for GitHub Code Scanning
 
-      - name: Scan Docker Image for Vulnerabilities
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: |
-          snyk container test code-challenge_api:latest
-          snyk container test code-challenge_spa:latest
-          snyk container test code-challenge_nginx:latest
+        - name: Run Snyk to check Docker images for vulnerabilities (SPA)
+          uses: snyk/actions/docker@master
+          env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          with:
+            image: code-challenge_spa:latest
+            args: --file=Dockerfile.react --severity-threshold=high
+            sarif: true
+
+        - name: Run Snyk to check Docker images for vulnerabilities (Nginx)
+          uses: snyk/actions/docker@master
+          env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          with:
+            image: code-challenge_nginx:latest
+            args: --file=Dockerfile.nginx --severity-threshold=high
+            sarif: true
+
+        - name: Upload Snyk results to GitHub Code Scanning
+          uses: github/codeql-action/upload-sarif@v2
+          with:
+            sarif_file: snyk.sarif
 
   test:
     name: Test Application
@@ -147,21 +162,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose -y
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
       - name: Run Database Setup and Migrations
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
           export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          docker-compose run api rake db:setup
-          docker-compose run api rake db:migrate
+          docker compose run api rake db:setup
+          docker compose run api rake db:migrate
 
       - name: Run Tests
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }} 
         run:
-          docker-compose run api bundle exec rspec
+          docker compose run api bundle exec rspec
+
+    
