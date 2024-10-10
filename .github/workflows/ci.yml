@@ -10,14 +10,19 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-        - name:
-          uses: snyk/actions/docker@master
-          env:
-            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # Snyk API token to authenticate
-          with:
-            image: code-challenge_api:latest
-            args: --file=Dockerfile.rails
-            
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+d
+      - name:
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # Snyk API token to authenticate
+        with:
+          image: code-challenge_api:latest
+          args: --file=Dockerfile.rails
+
   #   name: Linting
   #   runs-on: ubuntu-latest
   #   steps:
