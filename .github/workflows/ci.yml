@@ -14,7 +14,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-d
+          
       - name:
         uses: snyk/actions/docker@master
         env:
