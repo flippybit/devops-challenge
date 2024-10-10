@@ -124,6 +124,7 @@ jobs:
 
         - name: Run Snyk to check Docker images for vulnerabilities (API)
           uses: snyk/actions/docker@master
+          continue-on-error: true # To make sure that SARIF upload gets called
           env:
             SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           with:
@@ -133,6 +134,7 @@ jobs:
 
         - name: Run Snyk to check Docker images for vulnerabilities (SPA)
           uses: snyk/actions/docker@master
+          continue-on-error: true # To make sure that SARIF upload gets called
           env:
             SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           with:
@@ -142,6 +144,7 @@ jobs:
 
         - name: Run Snyk to check Docker images for vulnerabilities (Nginx)
           uses: snyk/actions/docker@master
+          continue-on-error: true # To make sure that SARIF upload gets called
           env:
             SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           with:
