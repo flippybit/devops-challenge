@@ -107,7 +107,7 @@ jobs:
       - name: Build Docker Images
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}  # Pass secret to Docker
-        run: docker-compose build
+        run: docker compose build
 
   snyk-scan:
     name: Snyk Scan for Docker Images
