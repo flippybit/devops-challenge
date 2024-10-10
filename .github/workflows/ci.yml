@@ -12,12 +12,6 @@ jobs:
     steps:
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
-
-      # - name: Authenticate Snyk
-      #   run:  auth ${{ secrets.SNYK_TOKEN }}
-      #   env:
-      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
       - name: scan
         uses: snyk/actions/docker@master
         env:
