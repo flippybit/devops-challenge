@@ -109,6 +109,14 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}  # Pass secret to Docker
         run: docker compose build
 
+      - name: Snyk Docker Image Scan
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # Snyk API token to authenticate
+        with:
+          image: code-challenge_api:latest
+          args: --file=Dockerfile.rails
+
   snyk-scan:
     name: Snyk Scan for Docker Images
     runs-on: ubuntu-latest
