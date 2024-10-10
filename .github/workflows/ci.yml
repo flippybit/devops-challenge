@@ -11,201 +11,201 @@ permissions:
 
 
 jobs:
-  # lint:
-  #   name: Linting
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Lint code with Super-Linter
-  #       uses: github/super-linter@v4
-  #       env:
-  #         DEFAULT_BRANCH: main
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         RUBOCOP_CONFIG_FILE: ./api/.rubocop.yml
-  #         IGNORE_GENERATED_FILES: true
-  #         IGNORE_GITIGNORED_FILES: true
-  #         VALIDATE_ALL_CODEBASE: true
-  #         VALIDATE_JAVASCRIPT_ES: true
-  #         VALIDATE_TYPESCRIPT: true
-  #         VALIDATE_HTML: true
+      - name: Lint code with Super-Linter
+        uses: github/super-linter@v4
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUBOCOP_CONFIG_FILE: ./api/.rubocop.yml
+          IGNORE_GENERATED_FILES: true
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_TYPESCRIPT: true
+          VALIDATE_HTML: true
       
-  #     - name: Secret Scanning with Gitleaks
-  #       uses: gitleaks/gitleaks-action@v2
-  #       with:
-  #         config: /dev/null 
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Secret Scanning with Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          config: /dev/null 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # codeql-analysis:
-  #   name: CodeQL Analysis
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     security-events: write
-  #     packages: read
-  #     actions: read
-  #     contents: read
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       language: [ruby, javascript-typescript]
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ruby, javascript-typescript]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Initialize CodeQL
-  #       uses: github/codeql-action/init@v3
-  #       with:
-  #         languages: ${{ matrix.language }}
-  #         build-mode: none
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
 
-  #     - name: Perform CodeQL Analysis
-  #       uses: github/codeql-action/analyze@v3
-  #       with:
-  #         category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
 
-  # dependency-scanning:
-  #   name: Snyk Dependency Scanning
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@master
+  dependency-scanning:
+    name: Snyk Dependency Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
 
-  #     # Node.js Dependency Scanning (React app)
-  #     - name: Set up Node.js for React App
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18'  # Use the same version as the React app
+      # Node.js Dependency Scanning (React app)
+      - name: Set up Node.js for React App
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Use the same version as the React app
 
-  #     - name: Install npm dependencies for React app
-  #       working-directory: ./spa
-  #       run: npm install
+      - name: Install npm dependencies for React app
+        working-directory: ./spa
+        run: npm install
 
-  #     - name: Snyk Dependency Scan for JavaScript
-  #       uses: snyk/actions/node@master
-  #       continue-on-error: true  
-  #       env:
-  #         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #       with:
-  #         args: --sarif-file-output=snyk-node.sarif
+      - name: Snyk Dependency Scan for JavaScript
+        uses: snyk/actions/node@master
+        continue-on-error: true  
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk-node.sarif
 
-  #     - name: Upload JavaScript Scan Results to GitHub Code Scanning
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       with:
-  #         sarif_file: snyk-node.sarif
+      - name: Upload JavaScript Scan Results to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-node.sarif
 
-  #     # Ruby Dependency Scanning (Rails app)
-  #     - name: Set up Ruby for Rails App
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         ruby-version: 3.1.3  # Use the same version as the Rails app
+      # Ruby Dependency Scanning (Rails app)
+      - name: Set up Ruby for Rails App
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.3  # Use the same version as the Rails app
 
-  #     - name: Install dependencies for Rails App
-  #       working-directory: ./api
-  #       run: bundle install
+      - name: Install dependencies for Rails App
+        working-directory: ./api
+        run: bundle install
 
-  #     - name: Snyk Dependency Scan for Ruby
-  #       uses: snyk/actions/ruby@master
-  #       continue-on-error: true  
-  #       env:
-  #         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #       with:
-  #         args: --sarif-file-output=snyk-ruby.sarif
+      - name: Snyk Dependency Scan for Ruby
+        uses: snyk/actions/ruby@master
+        continue-on-error: true  
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk-ruby.sarif
 
-  #     - name: Upload Ruby Scan Results to GitHub Code Scanning
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       with:
-  #         sarif_file: snyk-ruby.sarif
+      - name: Upload Ruby Scan Results to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-ruby.sarif
    
-  # build:
-  #   name: Build Application
-  #   runs-on: ubuntu-latest
-  #   needs: [lint, codeql-analysis, dependency-scanning]
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: [lint, codeql-analysis, dependency-scanning]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Docker
-  #       uses: docker/setup-buildx-action@v2
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
-  #     - name: Build Docker Images
-  #       env:
-  #         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}  # Pass secret to Docker
-  #       run: |
-  #         docker compose build
+      - name: Build Docker Images
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}  # Pass secret to Docker
+        run: |
+          docker compose build
 
-  # snyk-scan:
-  #     name: Snyk Scan for Docker Images
-  #     runs-on: ubuntu-latest
-  #     needs: build  # Run Snyk scan after the Docker image build
-  #     steps:
-  #       - name: Checkout code
-  #         uses: actions/checkout@v2
+  snyk-scan:
+      name: Snyk Scan for Docker Images
+      runs-on: ubuntu-latest
+      needs: build  # Run Snyk scan after the Docker image build
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-  #       - name: Build Docker Images
-  #         run: |
-  #           docker compose build
+        - name: Build Docker Images
+          run: |
+            docker compose build
 
-  #       - name: Run Snyk to check Docker images for vulnerabilities (API)
-  #         uses: snyk/actions/docker@master
-  #         continue-on-error: true # To make sure that SARIF upload gets called
-  #         env:
-  #           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #         with:
-  #           image: code-challenge_api:latest
-  #           args: --file=Dockerfile.rails --severity-threshold=high
-  #           sarif: true  # This ensures SARIF file generation for GitHub Code Scanning
+        - name: Run Snyk to check Docker images for vulnerabilities (API)
+          uses: snyk/actions/docker@master
+          continue-on-error: true # To make sure that SARIF upload gets called
+          env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          with:
+            image: code-challenge_api:latest
+            args: --file=Dockerfile.rails --severity-threshold=high
+            sarif: true  # This ensures SARIF file generation for GitHub Code Scanning
 
-  #       - name: Run Snyk to check Docker images for vulnerabilities (SPA)
-  #         uses: snyk/actions/docker@master
-  #         continue-on-error: true # To make sure that SARIF upload gets called
-  #         env:
-  #           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #         with:
-  #           image: code-challenge_spa:latest
-  #           args: --file=Dockerfile.react --severity-threshold=high
-  #           sarif: true
+        - name: Run Snyk to check Docker images for vulnerabilities (SPA)
+          uses: snyk/actions/docker@master
+          continue-on-error: true # To make sure that SARIF upload gets called
+          env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          with:
+            image: code-challenge_spa:latest
+            args: --file=Dockerfile.react --severity-threshold=high
+            sarif: true
 
-  #       - name: Run Snyk to check Docker images for vulnerabilities (Nginx)
-  #         uses: snyk/actions/docker@master
-  #         continue-on-error: true # To make sure that SARIF upload gets called
-  #         env:
-  #           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #         with:
-  #           image: code-challenge_nginx:latest
-  #           args: --file=Dockerfile.nginx --severity-threshold=high
-  #           sarif: true
+        - name: Run Snyk to check Docker images for vulnerabilities (Nginx)
+          uses: snyk/actions/docker@master
+          continue-on-error: true # To make sure that SARIF upload gets called
+          env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          with:
+            image: code-challenge_nginx:latest
+            args: --file=Dockerfile.nginx --severity-threshold=high
+            sarif: true
 
-  #       - name: Upload Snyk results to GitHub Code Scanning
-  #         uses: github/codeql-action/upload-sarif@v3
-  #         with:
-  #           sarif_file: snyk.sarif
+        - name: Upload Snyk results to GitHub Code Scanning
+          uses: github/codeql-action/upload-sarif@v3
+          with:
+            sarif_file: snyk.sarif
 
-  # test:
-  #   name: Test Application with DB
-  #   runs-on: ubuntu-latest
-  #   needs: [build,snyk-scan]  # Only run tests if the build job succeeds
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  test:
+    name: Test Application with DB
+    runs-on: ubuntu-latest
+    needs: [build,snyk-scan]  # Only run tests if the build job succeeds
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       
-  #     - name: Set up Docker
-  #       uses: docker/setup-buildx-action@v2
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
-  #     - name: Run Database Setup and Migrations
-  #       env:
-  #         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-  #       run: |
-  #         export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-  #         docker compose run api rake db:setup
-  #         docker compose run api rake db:migrate
+      - name: Run Database Setup and Migrations
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: |
+          export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          docker compose run api rake db:setup
+          docker compose run api rake db:migrate
 
-  #     - name: Run Tests
-  #       env:
-  #         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }} 
-  #       run:
-  #         docker compose run api bundle exec rspec
+      - name: Run Tests
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }} 
+        run:
+          docker compose run api bundle exec rspec
 
   build-and-push:
       name: Build and Push Docker Images
