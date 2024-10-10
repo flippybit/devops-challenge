@@ -10,11 +10,14 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+        
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          
+
       - name:
         uses: snyk/actions/docker@master
         env:
