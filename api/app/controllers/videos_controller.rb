@@ -47,8 +47,14 @@ class VideosController < ApplicationController
     @video = Video.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
+# Only allow a list of trusted parameters through.
+  # def video_params
+  #   params.fetch(:video, {} )
+  # end
+
   def video_params
-    params.fetch(:video, {} )
+    params.permit(:title, :categories_id)
   end
+  
 end
+

@@ -24,7 +24,7 @@ services:
       - ./api:/app
     ports:
       - "3000:3000"
-    command: bundle exec rails server -b 0.0.0.0
+    command: bash -c "rm -f /app/tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0" # fixed the PID problem
     environment:
       REDIS_URL: 'redis://redis:6379/1'
       DB_HOST: db
