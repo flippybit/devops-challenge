@@ -101,16 +101,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose -y
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Build Docker Images
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}  # Pass secret to Docker
-        run: |
-          docker-compose build
+        run: docker-compose build
 
   snyk-scan:
     name: Snyk Scan for Docker Images
@@ -122,6 +119,7 @@ jobs:
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
+        
       
       - name: Build docker images
         run: docker compose build
